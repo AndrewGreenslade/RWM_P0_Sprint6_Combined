@@ -37,6 +37,7 @@ public class Ship : MonoBehaviour
     public bool isDead = false;
     public float speed = 1;
     public bool canShoot = true;
+    public bool sniperShot = false;
 
     [SerializeField]
     private  MeshRenderer mesh;
@@ -59,6 +60,15 @@ public class Ship : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space) && canShoot)
         {
+            sniperShot = false;
+
+            ShootLaser();
+        }
+
+
+        if (Input.GetKey(KeyCode.S) && canShoot)
+        {
+            sniperShot = true;
             ShootLaser();
         }
 
@@ -83,6 +93,13 @@ public class Ship : MonoBehaviour
         canShoot = false;
         GameObject laserShot = SpawnLaser();
         laserShot.transform.position = shotSpawn.position;
+        laserShot.transform.Rotate(0.0f, 0.0f, 0.0f, Space.Self);
+
+        if (sniperShot)
+        {
+            laserShot.transform.Rotate(0.0f, 0.0f, 90.0f, Space.Self);
+        }
+
         yield return new WaitForSeconds(0.4f);
         canShoot = true;
     }
