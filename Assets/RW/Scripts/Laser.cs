@@ -34,12 +34,29 @@ using UnityEngine;
 
 public class Laser : MonoBehaviour
 {
+
+
+    public Ship shipScript;
+
+
     [SerializeField]
     private Spawner spawner;
 
-	void Update ()
+
+
+
+
+    void Start()
     {
-        transform.Translate(Vector3.back * Time.deltaTime * 5);
+        // Finds the object the script "IGotBools" is attached to and assigns it to the gameobject called g.
+        shipScript = FindObjectOfType<Game>().GetShip();
+    }
+
+
+
+    void Update ()
+    {
+        transform.Translate(Vector3.back * Time.deltaTime * 10);
         if (transform.position.y > 10)
         {
             Destroy(gameObject);
@@ -52,8 +69,23 @@ public class Laser : MonoBehaviour
         {
             Game.AsteroidDestroyed();
             Destroy(gameObject);
-            spawner.asteroids.Remove(collision.gameObject);
-            Destroy(collision.gameObject);
+
+            if (shipScript.sniperShot == true)
+            {
+                spawner.asteroidHP = spawner.asteroidHP - 100;
+            }
+
+            if (shipScript.sniperShot == false)
+            {
+                spawner.asteroidHP = spawner.asteroidHP - 50;
+            }
+
+
+            if (spawner.asteroidHP <= 0)
+            {
+                spawner.asteroids.Remove(collision.gameObject);
+                Destroy(collision.gameObject);
+            }
         }
     }
 }

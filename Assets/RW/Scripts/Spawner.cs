@@ -35,6 +35,8 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     public List<GameObject> asteroids = new List<GameObject>();
+    public float asteroidHP = 100;
+
 
     [SerializeField]
     private GameObject asteroid1;
@@ -66,18 +68,23 @@ public class Spawner : MonoBehaviour
         {
             case 1:
                 asteroid = Instantiate(asteroid1);
+                asteroidHP = 100;
                 break;
             case 2:
                 asteroid = Instantiate(asteroid2);
+                asteroidHP = 100;
                 break;
             case 3:
                 asteroid = Instantiate(asteroid3);
+                asteroidHP = 50;
                 break;
             case 4:
                 asteroid = Instantiate(asteroid4);
+                asteroidHP = 50;
                 break;
             default:
                 asteroid = Instantiate(asteroid1);
+                asteroidHP = 60;
                 break;
         }
 
