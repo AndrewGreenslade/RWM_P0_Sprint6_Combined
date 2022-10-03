@@ -10,8 +10,7 @@ public class TestSuite
     [SetUp]
     public void Setup()
     {
-        GameObject gameGameObject =
-            MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/Game"));
+        GameObject gameGameObject = MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/Game"));
         game = gameGameObject.GetComponent<Game>();
     }
 
@@ -29,5 +28,22 @@ public class TestSuite
 
         yield return new WaitForSeconds(1.0f);
         Assert.AreEqual(false, game.GetShip().canShoot);
+    }
+    
+    [UnityTest]
+    public IEnumerator tripleShootTest()
+    {
+        GameObject asteroid = game.GetSpawner().SpawnAsteroid();
+        asteroid.transform.position = Vector3.zero;
+
+        bool isShootingTS = game.GetShip().isShootingTrippleShot;
+
+        game.GetShip().ShootTrippleShot();
+        
+        yield return new WaitForSeconds(0.1f);
+
+        isShootingTS = game.GetShip().isShootingTrippleShot;
+
+        Assert.IsTrue(isShootingTS);
     }
 }

@@ -51,6 +51,12 @@ public class Ship : MonoBehaviour
 
     private float maxLeft = -8;
     private float maxRight = 8;
+    
+    private float startTimeTKey = 0f;
+    private float holdTimeTKey = 1.0f; // 5 seconds
+    public bool isShootingTrippleShot = false;
+    private float startTimeCooldown = 0f;
+    private float holdTimeCooldown = 3.0f;
 
     private void Update()
     {
@@ -60,18 +66,8 @@ public class Ship : MonoBehaviour
         }
 
         if (Input.GetKey(KeyCode.Space) && canShoot)
-        {
-            
-            //if(shotCount >= 10)
-            //{
-            //    ReloadLaser();
-            //}
-            //else
-            //{
-                
+        {                
             ShootLaser();
-            //}
-         
         }
 
         if (Input.GetKey(KeyCode.LeftArrow))
@@ -83,12 +79,33 @@ public class Ship : MonoBehaviour
         {
             MoveRight();
         }
-    }
 
-    //public void ReloadLaser()
-    //{
-    //    StartCoroutine("Reload");
-    //}
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            startTimeTKey = Time.time;
+        }
+
+        if (Input.GetKey(KeyCode.T))
+        {
+            if (startTimeTKey + holdTimeTKey <= Time.time)
+            {
+                if (!isShootingTrippleShot)
+                {
+                    startTimeCooldown = Time.time;
+                    ShootTrippleShot();
+                }
+            }
+        }
+
+        if (isShootingTrippleShot == true)
+        {
+
+            if (startTimeCooldown + holdTimeCooldown <= Time.time)
+            {
+                isShootingTrippleShot = false;
+            }
+        }
+    }
 
     public void ShootLaser()
     {
@@ -101,6 +118,12 @@ public class Ship : MonoBehaviour
             StartCoroutine("Shoot");
         }
   
+    }
+
+    public void ShootTrippleShot()
+    {
+        isShootingTrippleShot = true;
+        StartCoroutine("TrippleShot");
     }
 
     IEnumerator Shoot()
@@ -120,6 +143,15 @@ public class Ship : MonoBehaviour
         shotCount = 0;
         yield return new WaitForSeconds(2.0f);
         canShoot = true;
+    }
+
+    IEnumerator TrippleShot()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            StartCoroutine(Shoot());
+            yield return new WaitForSeconds(0.25f);
+        }
     }
 
     public GameObject SpawnLaser()
