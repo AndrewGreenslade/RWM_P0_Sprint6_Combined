@@ -37,6 +37,8 @@ public class Ship : MonoBehaviour
     public bool isDead = false;
     public float speed = 1;
     public bool canShoot = true;
+    public int shotCount = 0;
+
 
     [SerializeField]
     private  MeshRenderer mesh;
@@ -59,7 +61,17 @@ public class Ship : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space) && canShoot)
         {
+            
+            //if(shotCount >= 10)
+            //{
+            //    ReloadLaser();
+            //}
+            //else
+            //{
+                
             ShootLaser();
+            //}
+         
         }
 
         if (Input.GetKey(KeyCode.LeftArrow))
@@ -73,17 +85,40 @@ public class Ship : MonoBehaviour
         }
     }
 
+    //public void ReloadLaser()
+    //{
+    //    StartCoroutine("Reload");
+    //}
+
     public void ShootLaser()
     {
-        StartCoroutine("Shoot");
+        if (shotCount >= 10)
+        {
+            StartCoroutine("Reload");
+        }
+        else
+        {
+            StartCoroutine("Shoot");
+        }
+  
     }
 
     IEnumerator Shoot()
     {
         canShoot = false;
+        shotCount++;
         GameObject laserShot = SpawnLaser();
         laserShot.transform.position = shotSpawn.position;
         yield return new WaitForSeconds(0.4f);
+        canShoot = true;
+    }
+
+
+    IEnumerator Reload()
+    {
+        canShoot = false;
+        shotCount = 0;
+        yield return new WaitForSeconds(2.0f);
         canShoot = true;
     }
 
